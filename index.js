@@ -1,9 +1,10 @@
 const { error } = require('console')
-const {Client, GatewayIntentBits, Collection} = require('discord.js')
+const { Client, GatewayIntentBits, Collection } = require('discord.js')
 const fs = require('fs')
 const path = require('path')
+require('dotenv').config({ path: '.env.local' })
 
-const {token} = require('./config.json')
+const token = process.env.TOKEN
 
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
@@ -22,22 +23,22 @@ for (const file of commandFiles) {
 
 client.once('ready', () => {
     console.log('Bot is online')
-}) 
+})
 
 //If the interaction is not a command - do nothing
 
 client.on('interactionCreate', async (interaction) => {
-    if(!interaction.isCommand) return
+    if (!interaction.isCommand) return
 
     const command = client.commands.get(interaction.commandName)
 
-    if(!command) return
+    if (!command) return
 
     try {
         await command.execute(interaction)
-    }catch(e) {
+    } catch (e) {
         console.log("There was an error", e)
-        await interaction.reply({content: `There was an error ${e.message}`, ephemeral: true})
+        await interaction.reply({ content: `There was an error ${e.message}`, ephemeral: true })
     }
 })
 
